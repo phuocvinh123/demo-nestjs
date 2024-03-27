@@ -8,23 +8,21 @@ import { EventsModule } from './events/events.module';
 import { AppJapanService } from './app.japan.service';
 import { AppDummy } from './app.dummy';
 import { ConfigModule } from '@nestjs/config';
+import ormConfig from './config/orm.config.prod';
+import ormConfigProd from './config/orm.config.prod';
+
 
 @Module({
   imports: [
     ConfigModule.forRoot(
-    {isGlobal: true}
-    ),
-    TypeOrmModule.forRoot({
-    type:'mysql',
-    host:process.env.DB_HOST,
-    port:Number( process.env.DB_PORT),
-    username:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.DB_NAME,
-    entities:[Event],
-    synchronize:true
-  }),
- 
+    {isGlobal: true,
+    load:[ormConfig],
+    expandVariables: true
+   }),
+    TypeOrmModule.forRootAsync({
+      useFactory:process.env.NODE_ENV !== 'production' 
+      ? ormConfig :ormConfigProd
+    }),
   EventsModule
 ],
   controllers: [AppController],
