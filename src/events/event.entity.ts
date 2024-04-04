@@ -2,9 +2,15 @@ import { User } from "src/auth/user.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Attendee } from "./attendee.entity";
 import { Expose } from "class-transformer";
+import { PaginationResult } from "src/pagination/paginator";
 
 @Entity()
 export class Event {
+
+  constructor(partial?:Partial<Event>){
+    Object.assign(this, partial);
+  }
+
   @PrimaryGeneratedColumn()
   @Expose()
   id: number;
@@ -48,3 +54,5 @@ export class Event {
   @Expose()
   attendeeAccepted?: number;
 }
+
+export type PaginatedEvents =PaginationResult<Event>;
